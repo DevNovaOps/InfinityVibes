@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terms of Service - Event Management Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* Same CSS theme as About page */
+    :root {
+        --brand-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        --brand-gradient-hover: linear-gradient(135deg, #2563eb, #7c3aed);
+        --bg-primary: #0a0f19;
+        --bg-secondary: #111827;
+        --card-bg: rgba(23, 29, 42, 0.7);
+        --card-border: rgba(59, 130, 246, 0.1);
+        --card-border-hover: rgba(59, 130, 246, 0.4);
+        --text-primary: #e5e7eb;
+        --text-secondary: #9ca3af;
+        --text-accent: #3b82f6;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+        position: relative;
+        padding: 2rem 1rem 4rem;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.2), transparent 40%),
+                    radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.2), transparent 40%);
+        animation: move-aurora 20s infinite alternate ease-in-out;
+        z-index: -1;
+    }
+
+    @keyframes move-aurora {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .container {
+        max-width: 900px;
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 2.5rem 3rem;
+        border: 1px solid var(--card-border);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    }
+
+    h1, h2, h3 {
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        background: var(--brand-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--text-accent);
+        padding-bottom: 0.3rem;
+    }
+
+    h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.7rem;
+    }
+
+    p, li {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    ul {
+        padding-left: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    ul li {
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight {
+        background: var(--brand-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 1.8rem 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Terms of Service</h1>
+
+    <section>
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using the Event Management Portal ("the Platform"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, please do not use the Platform.</p>
+    </section>
+
+    <section>
+      <h2>2. Use of the Platform</h2>
+      <p>The Platform enables users to discover and connect with event management vendors. You agree to use the Platform for lawful purposes only and not to:</p>
+      <ul>
+        <li>Violate any applicable laws or regulations.</li>
+        <li>Upload or share content that is unlawful, harmful, defamatory, or infringing on third-party rights.</li>
+        <li>Interfere with or disrupt the Platform's operation or servers.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Vendor Registration and Responsibilities</h2>
+      <p>Vendors registering on the Platform must provide accurate and up-to-date information. Vendors are responsible for the content they upload, including portfolios and services. The Platform is not responsible for vendor actions or performance.</p>
+    </section>
+
+    <section>
+      <h2>4. User Content</h2>
+      <p>Users may upload images and other content to search or share their event preferences. By uploading content, you grant the Platform a license to use, store, and process it for providing services. You represent that you have all rights necessary to upload such content.</p>
+    </section>
+
+    <section>
+      <h2>5. Intellectual Property</h2>
+      <p>All intellectual property rights related to the Platform, including its design, software, and AI models, are owned by or licensed to the Platform. Users and vendors retain rights to their own content but grant the Platform a license to operate and improve services.</p>
+    </section>
+
+    <section>
+      <h2>6. Limitation of Liability</h2>
+      <p>The Platform is provided "as is" without warranties of any kind. We do not guarantee vendor quality, availability, or user satisfaction. In no event shall the Platform or its affiliates be liable for any damages arising out of the use or inability to use the Platform.</p>
+    </section>
+
+    <section>
+      <h2>7. Privacy</h2>
+      <p>Your use of the Platform is subject to our Privacy Policy, which explains how we collect, use, and protect your information. By using the Platform, you consent to such practices.</p>
+    </section>
+
+    <section>
+      <h2>8. Changes to Terms</h2>
+      <p>We reserve the right to modify these Terms of Service at any time. Changes will be posted on this page with an updated effective date. Continued use of the Platform after changes constitutes acceptance.</p>
+    </section>
+
+    <section>
+      <h2>9. Governing Law</h2>
+      <p>These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions.</p>
+    </section>
+
+    <section>
+      <h2>10. Contact Us</h2>
+      <p>If you have questions about these Terms, please contact us at:</p>
+      <p><strong>Department of Computer Science and Engineering</strong><br/>
+         The Maharaja Sayajirao University of Baroda, Vadodara<br/>
+         Email: <a href="mailto:csdept@msubaroda.ac.in" style="color: var(--text-accent); text-decoration: underline;">csdept@msubaroda.ac.in</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

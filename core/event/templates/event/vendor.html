@@ -1,0 +1,500 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vendor Dashboard | EventHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+  --brand-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  --brand-gradient-hover: linear-gradient(135deg, #2563eb, #7c3aed);
+  --bg-primary: #0a0f19;
+  --bg-secondary: #111827;
+  --card-bg: rgba(23, 29, 42, 0.7); /* Semi-transparent for glass effect */
+  --card-border: rgba(59, 130, 246, 0.1);
+  --card-border-hover: rgba(59, 130, 246, 0.4);
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-accent: #3b82f6;
+}
+
+/* --- Base & Fonts --- */
+body { 
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+/* --- Keyframe Animations --- */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.6); }
+}
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Reusable Components --- */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  border-radius: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+.glass-card:hover { border-color: var(--card-border-hover); }
+
+.tag {
+  background: var(--brand-gradient);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 25px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+.tag:hover {
+  background: var(--brand-gradient-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.loader {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--text-accent);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+.btn-primary {
+  background: var(--brand-gradient);
+  color: white;
+  font-weight: bold;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  width: 100%;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: var(--brand-gradient-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+.btn-primary:disabled {
+  background: rgba(156, 163, 175, 0.5);
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* --- Page Layout & Structure --- */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.page-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.page-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  animation: slideUp 0.5s ease-out;
+}
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  animation: slideUp 0.5s ease-out;
+  animation-delay: 0.2s;
+}
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+.left-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- Profile Card --- */
+.profile-card { animation: slideUp 0.5s ease-out; animation-delay: 0.3s; }
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.profile-avatar {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 9999px;
+  background: var(--brand-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+.profile-info h2 { font-size: 1.5rem; font-weight: 700; }
+.profile-info .service { color: var(--text-accent); }
+.profile-info .description { color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem; }
+.profile-info .experience { color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.25rem; }
+
+.info-box-container { display: flex; flex-direction: column; gap: 1.5rem; }
+.info-box {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--card-border);
+}
+.info-box h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-accent); }
+.rating-display { display: flex; align-items: center; }
+.rating-display .stars { color: #facc15; font-size: 1.5rem; }
+.rating-display .score { margin-left: 0.5rem; font-weight: 600; }
+.rating-display .reviews { margin-left: 0.25rem; color: var(--text-secondary); }
+
+/* --- Upload Card --- */
+.upload-card { animation: slideUp 0.5s ease-out; animation-delay: 0.4s; }
+.upload-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+.upload-card .prompt { color: var(--text-secondary); margin-bottom: 1.5rem; }
+.file-input-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed var(--card-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+.file-input-wrapper:hover {
+  border-color: var(--card-border-hover);
+  background: rgba(255, 255, 255, 0.1);
+}
+.custom-file-input {
+  display: block; width: 100%; font-size: 0.875rem; color: var(--text-primary); cursor: pointer;
+}
+.custom-file-input::file-selector-button {
+  margin-right: 1rem; padding: 0.75rem 1.5rem; border-radius: 1rem; border: 0;
+  font-size: 0.875rem; font-weight: 600; color: white;
+  background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+.custom-file-input:hover::file-selector-button { background-color: rgba(255, 255, 255, 0.2); }
+#image-preview-container { margin-top: 1.5rem; }
+#image-preview-container.hidden { display: none; }
+#image-preview { max-width: 100%; height: auto; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+#tag-generation-status { margin-top: 1.5rem; text-align: center; }
+#upload-button { margin-top: 2rem; }
+
+/* --- Portfolio Gallery --- */
+.portfolio-card { animation: slideUp 0.5s ease-out; animation-delay: 0.5s; }
+.portfolio-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; }
+#gallery { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+
+.event-card {
+  position: relative;
+  overflow: hidden; /* ✅ keeps tags inside */
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),
+              0 4px 6px -2px rgba(0,0,0,0.05);
+  transition: all 0.5s ease;
+}
+.event-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+.event-card-image {
+  width: 100%;
+  height: 16rem;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  border-radius: 1rem;
+}
+.event-card:hover .event-card-image { transform: scale(1.1); }
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+/* ✅ Tags always inside image */
+.card-tags-container {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#empty-portfolio-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--text-secondary);
+}
+
+/* --- Floating Shapes --- */
+.floating-shapes {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+.shape {
+  position: absolute;
+  opacity: 0.1;
+  animation: float 8s ease-in-out infinite;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+.shape:nth-child(1) { top: 10%; left: 10%; width: 120px; height: 120px; animation-delay: 0s; }
+.shape:nth-child(2) { top: 60%; right: 15%; width: 80px; height: 80px; animation-delay: 2s; }
+.shape:nth-child(3) { bottom: 20%; left: 20%; width: 150px; height: 150px; animation-delay: 4s; }
+
+/* --- Responsive Design --- */
+@media (min-width: 768px) {
+  .container { padding: 2rem; }
+}
+@media (min-width: 1024px) {
+  .main-grid { grid-template-columns: repeat(3, 1fr); }
+  .left-column { grid-column: span 1 / span 1; }
+  .right-column { grid-column: span 2 / span 2; }
+  #gallery { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1280px) {
+  #gallery { grid-template-columns: repeat(3, 1fr); }
+}
+
+  </style>
+</head>
+<body>
+<a href="{% url 'home' %}" class="glass-card home-floating-btn" style="position: fixed; top: 2rem; left: 2rem; z-index: 100; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; box-shadow: 0 4px 15px rgba(59,130,246,0.2); background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1rem; color: var(--text-primary); transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;">
+    🏠 Home
+</a>
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+  </div>
+
+  <div class="container">
+    <header class="page-header">
+      <h1>Vendor Dashboard</h1>
+      <p>Manage your event portfolio and showcase your best work.</p>
+    </header>
+
+    <div class="main-grid">
+      <div class="left-column">
+        <div class="glass-card profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              {{ vendor.business_name|first|upper }}
+            </div>
+            <div class="profile-info">
+              <h2>{{ vendor.business_name }}</h2>
+              <p class="service">{{ vendor.get_service_category_display }}</p>
+              <p class="description">{{ vendor.business_description }}</p>
+              <p class="experience">Experience: {{ vendor.get_experience_display }}</p>
+            </div>
+          </div>
+          
+          <div class="info-box-container">
+            <div class="info-box">
+              <h3>Contact Information</h3>
+              <p><strong>Email:</strong> {{ vendor.user.email }}</p>
+              <p><strong>Phone:</strong> {{ vendor.user.phone }}</p>
+            </div>
+            <div class="info-box">
+              <h3>Overall Rating</h3>
+              <div class="rating-display">
+                <span class="stars">★★★★☆</span>
+                <span class="score">4.8</span>
+                <span class="reviews">(128 reviews)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card upload-card">
+          <h2>Upload New Event Image</h2>
+          <p class="prompt">Our AI will automatically generate tags to categorize your work.</p>
+          
+          <div class="file-input-wrapper">
+            <input type="file" id="image-input" accept="image/*" class="custom-file-input"/>
+          </div>
+
+          <div id="image-preview-container" class="hidden">
+            <img id="image-preview" src="#" alt="Preview"/>
+            <div id="tag-generation-status"></div>
+          </div>
+
+          <button id="upload-button" class="btn-primary" disabled>
+            Add to Portfolio
+          </button>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="glass-card portfolio-card">
+          <h2>Portfolio of Past Events</h2>
+          <div id="gallery">
+            
+            {% for item in portfolio %}
+            <div class="event-card">
+              <a href="{{ item.image.url }}" target="_blank" style="display: block; position: relative;">
+                <img src="{{ item.image.url }}" class="event-card-image" alt="Portfolio image for {{ vendor.business_name }}"/>
+                <div class="card-overlay"></div>
+                <div class="card-tags-container">
+                  <div class="card-tags">
+                    {% if item.tags_list %}
+                      {% for tag in item.tags_list %}
+                        <span class="tag">{{ tag }}</span>
+                      {% endfor %}
+                    {% else %}
+                      <span class="tag">Portfolio Item</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            </div>
+            {% empty %}
+              <p id="empty-portfolio-message">Your portfolio is empty. Upload an image to get started!</p>
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Your existing JavaScript remains the same and will work with this new CSS structure.
+  const imageInput = document.getElementById('image-input');
+  const previewContainer = document.getElementById('image-preview-container');
+  const preview = document.getElementById('image-preview');
+  const statusBox = document.getElementById('tag-generation-status');
+  const uploadBtn = document.getElementById('upload-button');
+  const gallery = document.getElementById('gallery');
+  const emptyMessage = document.getElementById('empty-portfolio-message');
+
+  let selectedFile = null;
+
+  imageInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    selectedFile = file;
+    const reader = new FileReader();
+
+    reader.onload = ev => {
+      preview.src = ev.target.result;
+      previewContainer.classList.remove('hidden');
+      statusBox.innerHTML = "";
+      uploadBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  uploadBtn.addEventListener('click', () => {
+    if (!selectedFile) return;
+
+    uploadBtn.disabled = true;
+    statusBox.innerHTML = '<div class="loader"></div><p style="margin-top: 0.75rem;">Uploading & Analyzing with AI...</p>';
+
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+
+    fetch("{% url 'upload_and_tag' %}", {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        if(emptyMessage) {
+            emptyMessage.remove();
+        }
+
+        const card = document.createElement("div");
+        card.className = "event-card"; // The main class for styling
+        
+        // Dynamically create the inner HTML with new classes
+        const tagsHTML = data.tags.map(t => `<span class="tag">${t}</span>`).join("");
+        card.innerHTML = `
+          <img src="${data.image_url}" class="event-card-image" alt="New portfolio item"/>
+          <div class="card-overlay"></div>
+          <div class="card-tags-container">
+            <div class="card-tags">${tagsHTML}</div>
+          </div>`;
+        gallery.prepend(card);
+
+        resetUploadForm();
+        statusBox.innerHTML = '<p style="color: #4ade80; font-weight: 500;">Successfully added to portfolio!</p>';
+        setTimeout(() => { statusBox.innerHTML = ''; }, 3000);
+
+      } else {
+        statusBox.innerHTML = `<p style="color: #f87171; font-weight: 500;">Error: ${data.error}</p>`;
+        uploadBtn.disabled = false;
+      }
+    })
+    .catch(error => {
+      console.error('Upload error:', error);
+      statusBox.innerHTML = '<p style="color: #f87171; font-weight: 500;">An unexpected error occurred. Check the console.</p>';
+      uploadBtn.disabled = false;
+    });
+  });
+
+  function resetUploadForm() {
+    imageInput.value = "";
+    previewContainer.classList.add("hidden");
+    uploadBtn.disabled = true;
+    selectedFile = null;
+  }
+</script>
+</body>
+</html>

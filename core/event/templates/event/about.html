@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About - Event Management Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* Your entire provided CSS here */
+        :root {
+            --brand-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --brand-gradient-hover: linear-gradient(135deg, #2563eb, #7c3aed);
+            --bg-primary: #0a0f19;
+            --bg-secondary: #111827;
+            --card-bg: rgba(23, 29, 42, 0.7);
+            --card-border: rgba(59, 130, 246, 0.1);
+            --card-border-hover: rgba(59, 130, 246, 0.4);
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --text-accent: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 2rem 1rem 4rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.2), transparent 40%),
+                        radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.2), transparent 40%);
+            animation: move-aurora 20s infinite alternate ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes move-aurora {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        h1, h2, h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--text-accent);
+            padding-bottom: 0.3rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.7rem;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-left: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Highlighted text style */
+        .highlight {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.8rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About the Event Management Portal</h1>
+        
+        <section>
+            <h2>Department &amp; Institution</h2>
+            <p>
+                Department of Computer Science and Engineering<br/>
+                Faculty of Technology and Engineering,<br/>
+                The Maharaja Sayajirao University of Baroda, Vadodara<br/>
+                51, Kalabhavan, Vadodara - 390001
+            </p>
+            <p><strong>Hack-A-Throne-25</strong></p>
+            <p><strong>PS 20: Event Management Portal - Web Development, AI</strong></p>
+        </section>
+
+        <section>
+            <h2>Problem Statement</h2>
+            <p>
+                There is currently no unified platform that enables users to seamlessly discover and connect with suitable event management vendors for diverse occasions such as birthdays, housewarmings, weddings, corporate events, exhibitions, or conferences. Users often struggle to identify the best vendors who can match their unique requirements just by sharing a similar picture from the internet or from a previous event.
+            </p>
+        </section>
+
+        <section>
+            <h2>In-Scope Features</h2>
+            <ul>
+                <li>Vendor registration with category, services, and portfolio details.</li>
+                <li>User search functionality using image-based input.</li>
+                <li>Recommendation engine to shortlist the top 10 vendors.</li>
+                <li>Event categories: personal (birthdays, weddings, housewarmings, casual gatherings) and professional (corporate events, conferences, exhibitions).</li>
+                <li>Vendor profiles with contact details, ratings, and previous work samples.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>AI &amp; Machine Learning Features</h2>
+            <h3>1. Image-Based Search with Computer Vision &amp; Deep Learning</h3>
+            <p>
+                Users upload an image (e.g., decor inspiration, lighting setup, booth design). A pre-trained Vision-Language model (e.g., CLIP, BLIP, or DINOv2) converts the image into high-dimensional embeddings. A similarity algorithm (FAISS or ANN-based) matches the image against vendor portfolios. Results are ranked based on visual similarity, vendor quality metrics, and relevance to event type.
+            </p>
+
+            <h3>2. Vendor Portfolio Tagging Using AI</h3>
+            <p>
+                Vendor-uploaded images are auto-tagged using image classification and object detection models (YOLOv8, Detectron2). Tags like “floral décor”, “stage lighting”, and “open-air setup” help improve searchability and image understanding.
+            </p>
+
+            <h3>3. Generative AI for Style Translation</h3>
+            <p>
+                Users can optionally generate a visual style or mood board using text prompts (e.g., “Boho wedding at sunset with earthy tones”). GenAI models (Stable Diffusion, DALL·E) produce reference images to aid search or vendor communication.
+            </p>
+
+            <h3>4. Recommendation Engine with Hybrid Intelligence</h3>
+            <p>
+                Collaborative filtering and content-based filtering combine to provide personalized vendor recommendations. Vendors are ranked by image-style match, event category relevance, ratings, and performance history.
+            </p>
+
+            <h3>5. Natural Language Processing for Vendor Profiles &amp; Queries</h3>
+            <p>
+                NLP models (e.g., BERT, RoBERTa) analyze vendor services, user feedback, and event descriptions to improve semantic matching and smart search capabilities.
+            </p>
+
+            <h3>6. Conversational AI for Planning Assistance (Future Scope)</h3>
+            <p>
+                A GenAI chatbot assistant could help users plan events, clarify needs, and navigate the platform with natural language queries.
+            </p>
+        </section>
+
+        <section>
+            <h2>Core Modules (MVP Scope)</h2>
+            <ul>
+                <li><strong>Vendor Registration:</strong> AI-assisted onboarding, auto-tagging of portfolio images.</li>
+                <li><strong>Image-Based Search:</strong> Upload image → extract features → retrieve & rank vendor portfolios.</li>
+                <li><strong>Recommendation Engine:</strong> ML-based ranking of top 10 vendor matches.</li>
+                <li><strong>Event Categories:</strong> Personal (birthday, wedding) and Professional (conferences, exhibitions).</li>
+                <li><strong>Vendor Profiles:</strong> Ratings, past work, tags, services, and contact options.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Impact Metrics</h2>
+            <ul>
+                <li><span class="highlight">Image-to-Vendor Matching Accuracy:</span> Measures effectiveness of AI image search by % of test uploads returning relevant vendor portfolios.</li>
+                <li><span class="highlight">Response Time for Image Search:</span> Average time to return top 10 vendor matches after upload.</li>
+                <li><span class="highlight">Relevance Score of Recommendations:</span> User/judge feedback rating relevance on a 1–5 scale.</li>
+                <li><span class="highlight">Tagging Precision:</span> Manual validation of AI-generated portfolio tags.</li>
+                <li><span class="highlight">Generative AI Prompt Success Rate:</span> % of coherent and relevant images produced from text prompts.</li>
+                <li><span class="highlight">Search-to-Click Ratio:</span> User engagement measured by interaction with recommended vendors.</li>
+                <li><span class="highlight">Repeat Query Capability:</span> Ability to refine searches and get new results quickly.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps &amp; Extensions (Optional)</h2>
+            <ul>
+                <li>Smart Vendor Chat Assistant leveraging LLMs (GPT-4, LLaMA) for natural language event planning.</li>
+                <li>Portfolio Quality Scoring Model using ML heuristics to rank vendor portfolio quality.</li>
+                <li>Feedback-Driven Learning Loop to personalize recommendations based on user likes/rejections.</li>
+                <li>Event Style Classifier using CNN or transfer learning for style-based filtering.</li>
+                <li>Interactive Moodboard Generator combining user images and GenAI outputs.</li>
+                <li>Location-Aware Search with map-based vendor filtering using mock or real geolocation data.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>

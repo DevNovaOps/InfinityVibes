@@ -1,0 +1,814 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Search | EventHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --dark-bg: #0f0f23;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: #b4b4b4;
+      --text-accent: #4facfe;
+      --success-color: #00ff88;
+      --error-color: #ff4757;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, var(--text-accent), #764ba2);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+      opacity: 0.6;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Container and Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: slideDown 0.8s ease-out;
+    }
+
+    .header h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--accent-gradient);
+      border-radius: 2px;
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    /* Glass card styling */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideUp 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.8s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-card:hover::before {
+      left: 100%;
+    }
+
+    /* Search Section */
+    .search-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .search-section {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .search-method {
+      position: relative;
+    }
+
+    .search-method h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .method-icon {
+      font-size: 1.5rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Text Search Styling */
+    .search-input-container {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1.2rem 1.5rem 1.2rem 3rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid transparent;
+      border-radius: 1.5rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 400;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--text-accent);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+
+    /* File Upload Styling */
+    .file-upload-container {
+      position: relative;
+      border: 2px dashed var(--glass-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+    }
+
+    .file-upload-container:hover {
+      border-color: var(--text-accent);
+      background: rgba(79, 172, 254, 0.05);
+      box-shadow: 0 0 30px rgba(79, 172, 254, 0.2);
+    }
+
+    .file-upload-container.dragover {
+      border-color: var(--success-color);
+      background: rgba(0, 255, 136, 0.1);
+      transform: scale(1.02);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--text-accent);
+      margin-bottom: 1rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .file-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-subtext {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    /* Image Preview */
+    .image-preview {
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+    }
+
+    .preview-image {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      object-fit: cover;
+    }
+
+    /* Search Buttons */
+    .search-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Loading State */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(79, 172, 254, 0.1);
+      border-top: 3px solid var(--text-accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Search Results */
+    #search-results {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .result-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    .result-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--text-accent);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(79, 172, 254, 0.2);
+    }
+
+    .result-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .result-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .result-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .result-score {
+      display: inline-block;
+      background: var(--accent-gradient);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      border: 1px solid var(--glass-border);
+    }
+
+    /* Messages */
+    .message {
+      text-align: center;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 500;
+    }
+
+    .error-msg {
+      background: rgba(255, 71, 87, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+    }
+
+    .no-results {
+      background: rgba(180, 180, 180, 0.1);
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* Animations */
+    @keyframes slideDown {
+      0% { transform: translateY(-50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .search-buttons {
+        flex-direction: column;
+      }
+      
+      #search-results {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background Particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1>🤖 AI Image Search</h1>
+      <p>Find similar vendors using advanced AI-powered image recognition</p>
+    </header>
+
+    <div class="glass-card">
+      <div class="search-section">
+        <!-- Text Search -->
+        <div class="search-method">
+          <h3>
+            <span class="method-icon">🔍</span>
+            Search by Keywords
+          </h3>
+          <div class="search-input-container">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="text-search" 
+              placeholder="Search vendors by tags, categories..."
+              autocomplete="off"
+            >
+          </div>
+          <div class="search-buttons">
+            <button class="btn btn-primary" id="text-search-btn">
+              Search by Text
+            </button>
+          </div>
+        </div>
+
+        <!-- Image Search -->
+        <div class="search-method">
+          <h3>
+            <span class="method-icon">🖼️</span>
+            Search by Image
+          </h3>
+          <form id="search-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="file-upload-container" id="file-drop-area">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Drop an image here or click to browse</div>
+              <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
+              <input type="file" name="image" accept="image/*" class="file-input" id="image-input">
+            </div>
+            <div class="image-preview" id="image-preview">
+              <img class="preview-image" id="preview-img" alt="Preview">
+            </div>
+            <div class="search-buttons">
+              <button type="submit" class="btn btn-primary" id="image-search-btn">
+                Search by Image
+              </button>
+              <button type="button" class="btn btn-secondary" id="clear-btn">
+                Clear
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+      <div class="loading-spinner"></div>
+      <p>Analyzing image with AI...</p>
+    </div>
+
+    <!-- Search Results -->
+    <div id="search-results"></div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particles.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Get CSRF Token
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + "=")) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    // DOM Elements
+    const searchForm = document.getElementById("search-form");
+    const textSearchInput = document.getElementById("text-search");
+    const textSearchBtn = document.getElementById("text-search-btn");
+    const imageSearchBtn = document.getElementById("image-search-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const fileDropArea = document.getElementById("file-drop-area");
+    const imageInput = document.getElementById("image-input");
+    const imagePreview = document.getElementById("image-preview");
+    const previewImg = document.getElementById("preview-img");
+    const loading = document.getElementById("loading");
+    const searchResults = document.getElementById("search-results");
+
+    // File Upload Handling
+    let selectedFile = null;
+
+    // Drag and drop functionality
+    fileDropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileDropArea.classList.add('dragover');
+    });
+
+    fileDropArea.addEventListener('dragleave', () => {
+      fileDropArea.classList.remove('dragover');
+    });
+
+    fileDropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileDropArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFileSelect(files[0]);
+      }
+    });
+
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      if (file && file.type.startsWith('image/')) {
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          imagePreview.style.display = 'block';
+          imageSearchBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Clear functionality
+    clearBtn.addEventListener('click', () => {
+      selectedFile = null;
+      imageInput.value = '';
+      imagePreview.style.display = 'none';
+      imageSearchBtn.disabled = true;
+      searchResults.innerHTML = '';
+    });
+
+    // Text search functionality
+    textSearchBtn.addEventListener('click', () => {
+      const query = textSearchInput.value.trim();
+      if (query) {
+        performTextSearch(query);
+      }
+    });
+
+    textSearchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const query = textSearchInput.value.trim();
+        if (query) {
+          performTextSearch(query);
+        }
+      }
+    });
+
+    // Search functions
+    async function performTextSearch(query) {
+      showLoading();
+      try {
+        // Simulate text search - replace with actual endpoint
+        const response = await fetch("{% url 'text_search' %}", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken 
+          },
+          body: JSON.stringify({ query: query }),
+        });
+        
+        const data = await response.json();
+        hideLoading();
+        displayResults(data);
+      } catch (error) {
+        hideLoading();
+        showError("Failed to perform text search");
+      }
+    }
+
+    // Image search form submission
+    searchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!selectedFile) return;
+
+      showLoading();
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+
+      try {
+        const response = await fetch("{% url 'image_search' %}", {
+          method: "POST",
+          headers: { "X-CSRFToken": csrftoken },
+          body: formData,
+        });
+
+        const text = await response.text();
+        console.log("Raw response:", text);
+
+        try {
+          const data = JSON.parse(text);
+          hideLoading();
+          displayResults(data);
+        } catch (err) {
+          hideLoading();
+          showError("Server returned invalid response");
+          console.error("JSON parse error:", err);
+        }
+      } catch (error) {
+        hideLoading();
+        showError("Network error occurred");
+        console.error("Network error:", error);
+      }
+    });
+
+    // Display functions
+    function showLoading() {
+      loading.style.display = 'block';
+      searchResults.innerHTML = '';
+    }
+
+    function hideLoading() {
+      loading.style.display = 'none';
+    }
+
+    function displayResults(data) {
+      searchResults.innerHTML = '';
+
+      if (data.success && data.results && data.results.length > 0) {
+        data.results.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = 'result-card';
+          card.style.animationDelay = `${index * 0.1}s`;
+          
+          card.innerHTML = `
+            <img src="${item.image_url}" alt="Vendor Image" loading="lazy">
+            <h3>${item.vendor}</h3>
+            <div class="result-score">Match: ${(item.similarity * 100).toFixed(1)}%</div>
+            <div class="result-tags">
+              ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+          `;
+          
+          searchResults.appendChild(card);
+        });
+      } else if (data.error) {
+        showError(data.error);
+      } else {
+        showNoResults();
+      }
+    }
+
+    function showError(message) {
+      searchResults.innerHTML = `
+        <div class="message error-msg">
+          <h3>❌ Error</h3>
+          <p>${message}</p>
+        </div>
+      `;
+    }
+
+    function showNoResults() {
+      searchResults.innerHTML = `
+        <div class="message no-results">
+          <h3>🔍 No Results Found</h3>
+          <p>Try adjusting your search terms or uploading a different image</p>
+        </div>
+      `;
+    }
+
+    // Initialize
+    imageSearchBtn.disabled = true;
+  </script>
+</body>
+</html>

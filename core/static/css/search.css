@@ -1,0 +1,103 @@
+:root {
+  --brand-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  --brand-gradient-hover: linear-gradient(135deg, #2563eb, #7c3aed);
+  --bg-primary: #0a0f19;
+  --bg-secondary: #111827;
+  --card-bg: rgba(23, 29, 42, 0.7);
+  --card-border: rgba(59, 130, 246, 0.1);
+  --card-border-hover: rgba(59, 130, 246, 0.4);
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-accent: #3b82f6;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  transition: border 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--card-border-hover);
+}
+
+h2 {
+  margin-bottom: 1rem;
+  color: var(--text-accent);
+}
+
+input[type="file"] {
+  margin: 1rem 0;
+  padding: 0.6rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  background: var(--brand-gradient);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: var(--brand-gradient-hover);
+}
+
+#search-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  text-align: center;
+  transition: border 0.3s ease;
+}
+
+.result-card:hover {
+  border-color: var(--card-border-hover);
+}
+
+.result-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.result-card p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.result-card strong {
+  color: var(--text-primary);
+}

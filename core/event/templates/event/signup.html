@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management Portal - Authentication</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <style>
+        .help-text {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #9ca3af; /* A muted, light gray */
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="logo-section">
+        <h1 class="logo">Infinity Vibes</h1>
+        <p class="tagline">AI-Powered Event Management Platform</p>
+    </div>
+
+    <div class="user-type-toggle">
+        <button class="user-type-btn {% if signup_form.data.user_type == 'consumer' or not signup_form.data.user_type %}active{% endif %}" data-type="consumer" type="button">
+            <span>👥 Consumer</span>
+        </button>
+        <button class="user-type-btn {% if signup_form.data.user_type == 'vendor' %}active{% endif %}" data-type="vendor" type="button">
+            <span>🏢 Vendor</span>
+        </button>
+    </div>
+
+    <div class="auth-mode-toggle">
+        <button class="auth-mode-btn {% if not show_signup %}active{% endif %}" data-mode="login" type="button">Sign In</button>
+        <button class="auth-mode-btn {% if show_signup %}active{% endif %}" data-mode="signup" type="button">Sign Up</button>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags %}{{ message.tags }}-message{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form class="form-section {% if not show_signup %}active{% endif %}" id="loginForm" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        {{ login_form.non_field_errors }}
+        <div class="form-group">
+            {{ login_form.email.label_tag }}
+            {{ login_form.email }}
+            {{ login_form.email.errors }}
+        </div>
+        <div class="form-group">
+            {{ login_form.password.label_tag }}
+            {{ login_form.password }}
+            {{ login_form.password.errors }}
+        </div>
+        <button type="submit" class="auth-btn" name="login">
+            <span class="btn-text">Sign In</span>
+        </button>
+    </form>
+
+    <form class="form-section {% if show_signup %}active{% endif %}" id="signupForm" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        {{ signup_form.non_field_errors }}
+        {{ signup_form.user_type }}
+        <div class="form-row">
+            <div class="form-group">
+                {{ signup_form.first_name.label_tag }}
+                {{ signup_form.first_name }}
+                {{ signup_form.first_name.errors }}
+            </div>
+            <div class="form-group">
+                {{ signup_form.last_name.label_tag }}
+                {{ signup_form.last_name }}
+                {{ signup_form.last_name.errors }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ signup_form.email.label_tag }}
+            {{ signup_form.email }}
+            {{ signup_form.email.errors }}
+        </div>
+        <div class="form-group">
+            {{ signup_form.phone.label_tag }}
+            {{ signup_form.phone }}
+            {{ signup_form.phone.errors }}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ signup_form.password.label_tag }}
+                {{ signup_form.password }}
+                {{ signup_form.password.errors }}
+            </div>
+            <div class="form-group">
+                {{ signup_form.confirm_password.label_tag }}
+                {{ signup_form.confirm_password }}
+                {{ signup_form.confirm_password.errors }}
+            </div>
+        </div>
+
+        <div class="vendor-specific" id="vendorFields" {% if signup_form.data.user_type != 'vendor' %}style="display:none;"{% endif %}>
+            {{ vendor_form.non_field_errors }}
+            <div class="form-group">
+                {{ vendor_form.business_name.label_tag }}
+                {{ vendor_form.business_name }}
+                {% if vendor_form.business_name.help_text %}
+                    <small class="help-text">{{ vendor_form.business_name.help_text }}</small>
+                {% endif %}
+                {{ vendor_form.business_name.errors }}
+            </div>
+            <div class="form-group">
+                {{ vendor_form.service_category.label_tag }}
+                {{ vendor_form.service_category }}
+                {% if vendor_form.service_category.help_text %}
+                    <small class="help-text">{{ vendor_form.service_category.help_text }}</small>
+                {% endif %}
+                {{ vendor_form.service_category.errors }}
+            </div>
+            <div class="form-group">
+                {{ vendor_form.experience.label_tag }}
+                {{ vendor_form.experience }}
+                {% if vendor_form.experience.help_text %}
+                    <small class="help-text">{{ vendor_form.experience.help_text }}</small>
+                {% endif %}
+                {{ vendor_form.experience.errors }}
+            </div>
+            <div class="form-group">
+                {{ vendor_form.business_description.label_tag }}
+                {{ vendor_form.business_description }}
+                {% if vendor_form.business_description.help_text %}
+                    <small class="help-text">{{ vendor_form.business_description.help_text }}</small>
+                {% endif %}
+                {{ vendor_form.business_description.errors }}
+            </div>
+        </div>
+
+        <button type="submit" class="auth-btn" name="signup">
+            <span class="btn-text">Create Account</span>
+        </button>
+    </form>
+
+    <div class="auth-footer">
+        <span id="authFooterText"></span>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modeButtons = document.querySelectorAll('.auth-mode-btn');
+    const userTypeButtons = document.querySelectorAll('.user-type-btn');
+    
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    
+    const userTypeField = document.getElementById('id_user_type'); 
+    const vendorFields = document.getElementById('vendorFields');
+    
+    const authFooterText = document.getElementById('authFooterText');
+
+    function updateAuthMode(mode) {
+        modeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+        loginForm.classList.toggle('active', mode === 'login');
+        signupForm.classList.toggle('active', mode === 'signup');
+        if (mode === 'login') {
+            authFooterText.innerHTML = `Don't have an account? <a href="#" data-mode="signup">Sign up</a>`;
+        } else {
+            authFooterText.innerHTML = `Already have an account? <a href="#" data-mode="login">Sign in</a>`;
+        }
+    }
+    
+    function updateUserType(type) {
+        userTypeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.type === type);
+        });
+        if (userTypeField) {
+            userTypeField.value = type;
+        }
+        if (type === 'vendor') {
+            vendorFields.style.display = 'block';
+        } else {
+            vendorFields.style.display = 'none';
+        }
+    }
+
+    modeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            updateAuthMode(this.dataset.mode);
+        });
+    });
+
+    userTypeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            updateUserType(this.dataset.type);
+        });
+    });
+    
+    document.querySelector('.auth-footer').addEventListener('click', function(e) {
+        if (e.target.tagName === 'A') {
+            e.preventDefault();
+            updateAuthMode(e.target.dataset.mode);
+        }
+    });
+    
+    const initialMode = document.querySelector('.auth-mode-btn.active').dataset.mode;
+    updateAuthMode(initialMode);
+    
+    const initialUserType = document.querySelector('.user-type-btn.active').dataset.type;
+    updateUserType(initialUserType);
+});
+</script>
+</body>
+</html>

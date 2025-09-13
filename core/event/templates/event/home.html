@@ -1,0 +1,394 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Infinity Vibes{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root 
+        {
+            --brand-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --brand-gradient-hover: linear-gradient(135deg, #2563eb, #7c3aed);
+            --bg-primary: #0a0f19;
+            --bg-secondary: #111827;
+            --card-bg: rgba(23, 29, 42, 0.7);
+            --card-border: rgba(59, 130, 246, 0.1);
+            --card-border-hover: rgba(59, 130, 246, 0.4);
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --text-accent: #3b82f6;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; /* Prevent horizontal scroll from background animation */
+            position: relative;
+        }
+
+        /* 🔹 Animated Aurora Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.2), transparent 40%),
+                        radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.2), transparent 40%);
+            animation: move-aurora 20s infinite alternate ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes move-aurora {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 2rem;
+        }
+        header {
+            width: 100%;
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(10, 15, 25, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand img {
+            width: 40px;
+            height: 40px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: color 0.2s ease;
+        }
+
+        nav a:not(.cta):hover {
+            color: var(--text-accent);
+        }
+
+        .cta {
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .cta:hover {
+            background: var(--brand-gradient-hover);
+            color: #fff; /* Explicitly set color for hover state */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        .user-greeting {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 🔹 Main Content Area */
+        main {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 🔹 Hero Section */
+        .hero {
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 🔹 Features Section */
+        .features-section {
+            padding: 2rem 0 6rem;
+            width: 100%;
+        }
+        
+        .features-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3.5rem;
+            color: var(--text-primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            text-decoration: none; /* For when card is a link */
+            display: block; /* For when card is a link */
+            color: inherit; /* For when card is a link */
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: var(--card-border-hover);
+        }
+
+        .feature-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .feature-card h3 .highlight {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* 🔹 Final Call-to-action */
+        .final-cta {
+            padding-bottom: 6rem;
+        }
+
+        /* 🔹 Footer */
+        footer {
+            margin-top: auto;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
+            background-color: var(--bg-primary);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* 🔹 Media Queries for Responsiveness */
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero p { font-size: 1.1rem; }
+            .features-section h2 { font-size: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container, .header-content { padding: 0 1.5rem; }
+            .hero { padding: 4rem 0; }
+            nav { gap: 0.8rem; }
+            .cta { padding: 8px 16px; }
+            .user-greeting { display: none; } /* Hide greeting on smaller screens for more space */
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .brand span { display: none; } /* Hide text logo on very small screens */
+            .features-grid { grid-template-columns: 1fr; }
+            .footer-links { display: flex; flex-direction: column; gap: 0.8rem; }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="brand">
+                
+                <span>Infinity Vibes</span>
+            </a>
+            <nav>
+                {% if request.session.user_id %}
+                    <span class="user-greeting">Hi, {{ request.session.user_name }}</span>
+                    <a href="{% url 'logout' %}" class="cta">Logout</a>
+                {% else %}
+                    <a href="{% url 'signup' %}">Sign Up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            {% if request.session.user_id %}
+                <h1>Welcome Back, {{ request.session.user_name }} 👋</h1>
+                <p>Explore curated events, connect with new people, and manage your own gatherings effortlessly.</p>
+            {% else %}
+                <h1>Discover & Create Unforgettable Events </h1>
+                <p>Infinity Vibes is your ultimate platform to find, join, and host events that match your vibe.</p>
+            {% endif %}
+        </section>
+
+        <section class="features-section">
+            <h2>
+                {% if request.session.user_id %}
+                    Your Event Dashboard
+                {% else %}
+                    Why Choose Infinity Vibes?
+                {% endif %}
+            </h2>
+            <div class="features-grid">
+                {% if request.session.user_id %}
+                    <a href="#" class="feature-card">
+                        <span class="icon">🗓️</span>
+                        <h3><span class="highlight">My</span> Events</h3>
+                        <p>Easily view and manage all the events you’ve joined or are currently hosting.</p>
+                    </a>
+                    <a href="#" class="feature-card">
+                        <span class="icon">➕</span>
+                        <h3><span class="highlight">Create</span> an Event</h3>
+                        <p>Ready to be a host? Bring your idea to life and invite a vibrant community to join.</p>
+                    </a>
+                {% else %}
+                    <a href="{% url 'search_page' %}" class="feature-card">
+                      <span class="icon">🔍</span>
+                      <h3><span class="highlight">Discover</span> with Ease</h3>
+                      <p>Our powerful search and recommendation engine helps you find curated events happening near you.</p>
+                    </a>
+                    <div class="feature-card">
+                        <span class="icon">🤝</span>
+                        <h3><span class="highlight">Connect</span> with People</h3>
+                        <p>Meet like-minded people, make lasting memories, and grow your personal or professional network.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="icon">🚀</span>
+                        <h3><span class="highlight">Create</span> & Build</h3>
+                        <p>Sign up in seconds to host your own public or private events and build your community from the ground up.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if not request.session.user_id %}
+            <div class="final-cta">
+                <a class="cta" href="{% url 'signup' %}" style="font-size: 1.1rem; padding: 16px 40px;">Get Started For Free</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="footer-content container">
+            <div class="footer-links">
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'terms' %}">Terms of Service</a>
+            </div>
+            <p>&copy; {% now "Y" %} Infinity Vibes. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
