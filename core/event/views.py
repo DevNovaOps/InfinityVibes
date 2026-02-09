@@ -340,3 +340,5 @@ def get_text_embedding(query: str):
     except Exception as e:
         print("❌ Error in get_text_embedding:", str(e))
         return None
+    
+
